@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>你和孙颖莎的哪个瞬间灵魂共鸣？</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f6f2f7;
+      --panel: rgba(255, 255, 255, 0.82);
+      --border: #e8ddf0;
+      --text: #3f3452;
+      --text-soft: #7e7392;
+      --primary: #b687d9;
+      --primary-strong: #9b6ccc;
+      --shadow: 0 10px 30px rgba(119, 92, 145, 0.1);
+    }
+
+    body {
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #faf8fc 0%, #f3edf8 100%);
+      color: var(--text);
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .page-shell {
+      align-items: center;
+      justify-content: center;
+      padding: 18px 14px 28px;
+      background: linear-gradient(180deg, #faf8fc 0%, #f4eef8 100%);
+    }
+
+    .page-card {
+      width: 100%;
+      max-width: 430px;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      padding: 22px 16px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    /* Home */
+    .home-shell {
+      flex-direction: column;
+      justify-content: center;
+      gap: 0;
+      padding: 18px 14px 28px;
+      background: linear-gradient(180deg, #faf8fc 0%, #f4eef8 100%);
+    }
+
+    .home-hero {
+      width: 100%;
+      max-width: 430px;
+      margin: 0 auto;
+    }
+
+    .home-hero img {
+      width: 100%;
+      display: block;
+      border-radius: 28px;
+      object-fit: contain;
+      box-shadow: 0 12px 30px rgba(119, 92, 145, 0.1);
+    }
+
+    .floating-card {
+      margin-top: -40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .home-card {
+      text-align: center;
+      padding-top: 24px;
+    }
+
+    .eyebrow {
+      font-size: 0.86rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    .home-card h1 {
+      font-size: 1.68rem;
+      line-height: 1.3;
+      margin-bottom: 12px;
+      color: #4c3e63;
+    }
+
+    .subtitle {
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: var(--text-soft);
+    }
+
+    .home-badge {
+      margin: 18px auto 0;
+      display: inline-block;
+      background: rgba(182, 135, 217, 0.12);
+      color: #78589e;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 0.92rem;
+    }
+
+    /* Quiz */
+    .quiz-header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .quiz-title {
+      font-size: 1.52rem;
+      line-height: 1.35;
+      color: #7d56b2;
+      margin-bottom: 10px;
+    }
+
+    .quiz-subtitle {
+      display: inline-block;
+      background: #efe4f8;
+      color: #6f6286;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .progress-row {
+      margin: 18px 0;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #e9deef;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #b687d9 0%, #9d6dcc 100%);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .progress-text {
+      text-align: right;
+      font-size: 0.95rem;
+      color: #846ca3;
+    }
+
+    .question-card {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid #efe5f5;
+      border-radius: 24px;
+      padding: 20px 14px;
+    }
+
+    .question-title {
+      font-size: 1.48rem;
+      line-height: 1.55;
+      color: #332547;
+      margin-bottom: 18px;
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      border: 2px solid #e7d7f3;
+      background: #f9f5fc;
+      color: #44355c;
+      border-radius: 24px;
+      padding: 16px 18px;
+      font-size: 1rem;
+      line-height: 1.65;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .option-btn:hover {
+      background: #f1e7fa;
+      border-color: #caaae7;
+      transform: translateY(-1px);
+    }
+
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .quiz-actions .btn {
+        flex: 1;
+    }
+
+    .single-btn-row {
+      flex-direction: column;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 18px;
+      padding: 15px 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #b487d8 0%, #9b6ccc 100%);
+      color: white;
+      box-shadow: 0 8px 20px rgba(155, 108, 204, 0.22);
+    }
+
+    .btn-secondary {
+      background: #efe7f5;
+      color: #8d75a8;
+    }
+
+    .wide-btn {
+      width: 100%;
+    }
+
+    /* Result */
+    .result-layout {
+      text-align: center;
+      padding-top: 30px;
+    }
+
+    .result-top-label {
+      color: #8a7d95;
+      font-size: 0.95rem;
+      margin-bottom: 26px;
+    }
+
+    .result-main-title {
+      font-size: 2rem;
+      color: #c9a9e8;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+
+    .result-main-subtitle {
+      color: #6e617f;
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
+
+    .result-box {
+      text-align: left;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid #eee2f5;
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .box-label {
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      color: #8f8a92;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .result-box p {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: #4b415c;
+      white-space: pre-line;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag {
+      background: #efe4f8;
+      color: #7a5c9d;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .score-item {
+      background: #f8f3fb;
+      border-radius: 18px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .score-label {
+      font-size: 0.88rem;
+      color: #847892;
+      margin-bottom: 6px;
+    }
+
+    .score-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #4a3b61;
+    }
+
+    .share-tip {
+      color: #c3a2df;
+      margin: 12px 0 8px;
+      font-size: 0.98rem;
+      line-height: 1.7;
+    }
+
+    @media (min-width: 768px) {
+      .page-card,
+      .home-card {
+        max-width: 560px;
+      }
+
+      .home-hero {
+        max-width: 540px;
+      }
+
+      .floating-card {
+        margin-top: -54px;
+      }
+
+      .score-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .result-main-title {
+        font-size: 2.3rem;
+      }
+    }
+
+    .credit {
+        margin-top: 14px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #9a8cab;
+        line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 首页 -->
+    <section id="home-screen" class="screen active page-shell home-shell">
+      <div class="home-hero">
+        <img src="./assets/sun-home-bg.png" alt="孙颖莎首页海报" />
+      </div>
+
+      <div class="page-card home-card floating-card">
+        <p class="eyebrow">Sun Yingsha Quiz</p>
+        <h1>你和孙颖莎的哪个瞬间灵魂共鸣？</h1>
+        <p class="subtitle">12 道题，找到属于你的 echo。</p>
+
+        <div class="home-badge">8 个正式结果 + 2 个隐藏结果</div>
+
+        <div class="btn-row">
+          <button id="start-btn" class="btn btn-primary wide-btn">开始测试</button>
+        </div>
+        <p class="credit">@野生番茄种植基地</p>
+      </div>
+    </section>
+
+    <!-- 答题页 -->
+    <section id="quiz-screen" class="screen page-shell">
+      <div class="page-card">
+        <div class="quiz-header">
+          <h1 class="quiz-title">你和孙颖莎的哪个瞬间灵魂共鸣？</h1>
+          <p class="quiz-subtitle">12 道题，找到属于你的 echo</p>
+        </div>
+
+        <div class="progress-row">
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+          <div id="progress-text" class="progress-text">第1 / 12题</div>
+        </div>
+
+        <div class="question-card">
+          <h2 id="question-text" class="question-title"></h2>
+          <div id="options-container" class="options"></div>
+        </div>
+
+        <div class="btn-row">
+            <button id="prev-btn" class="btn btn-secondary">上一题</button>
+            <button id="back-home-btn" class="btn btn-secondary">返回首页</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 结果页 -->
+    <section id="result-screen" class="screen page-shell">
+      <div class="page-card result-layout">
+        <p class="result-top-label">测试结果</p>
+        <h2 id="result-title" class="result-main-title"></h2>
+        <p id="result-subtitle" class="result-main-subtitle"></p>
+
+        <div class="result-box">
+          <p class="box-label">RESULT NOTE</p>
+          <p id="result-description"></p>
+        </div>
+
+        <div class="result-box">
+          <p class="box-label">KEYWORDS</p>
+          <div id="result-tags" class="tag-list"></div>
+        </div>
+
+        <div class="result-box">
+          <p class="box-label">YOUR DIMENSIONS</p>
+          <div id="score-grid" class="score-grid"></div>
+        </div>
+
+        <p class="share-tip">截屏发给朋友，一起来测测看。</p>
+        <p class="credit">@野生番茄种植基地</p>
+
+        <div class="btn-row single-btn-row">
+          <button id="restart-btn" class="btn btn-primary wide-btn">重新测试</button>
+          <button id="go-home-btn" class="btn btn-secondary wide-btn">回到首页</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+  const DIMENSIONS = ["Calm", "Fire", "Rise", "Aura", "Momentum"];
+
+  const results = [
+    {
+      id: "wc2019",
+      title: "2019 团体世界杯决赛｜力挽狂澜",
+      subtitle: "少年回头望，笑我还不快跟上。",
+      description: `这不是一场顺着赢下来的比赛，而是一场在悬崖边把自己重新拉回来的比赛。
+Courage. Nerve. Comeback.
+少年气，硬心脏，越到险处越不肯退。
+
+队友受伤，她临危受命。0:2 落后，慢慢掰成 2:2；决胜局 7:10 落后，又连追五分，把那场本该滑下去的比赛，硬生生重新拽回自己手里。命运把局面压到最紧，她却偏偏在那个时候，长出了更锋利的胆量。
+
+你最像她的地方，不是顺风时有多亮，而是局面越紧，你反而越清醒。你身上有一种不肯轻易认输的少年气，也有一种到了关键时刻，能把场子重新顶回来的狠劲。`,
+      tags: ["临危受命", "逆转", "少年气", "敢扛"],
+      profile: { Calm: 5, Fire: 4, Rise: 7, Aura: 2, Momentum: 4 }
+    },
+    {
+      id: "durban2023",
+      title: "2023 德班世乒赛｜终于是她",
+      subtitle: "从“相信自己”到“突破自己”。",
+      description: `这不是一场突然到来的冠军，而是一段一步一步走到这里的过程。
+Belief. Growth. Breakthrough.
+相信自己，慢慢成长，最后突破。
+
+吉盖斯特杯对孙颖莎来说就是一簇希望的烽火，远大的理想已经逐渐开始实现。
+
+你最像她的地方，不是一瞬间有多耀眼，而是你把很多时间里的努力、沉淀和等待，最后都落成了一个结果。`,
+      tags: ["相信", "成长", "突破", "完成"],
+      profile: { Calm: 5, Fire: 2, Rise: 4, Aura: 4, Momentum: 7 }
+    },
+    {
+      id: "asian2023",
+      title: "2023 亚运会｜主场为王",
+      subtitle: "受任于败军之际，奉命于危难之间",
+      description: `这不是一场只属于主场欢呼的胜利，而是一场在重压之下，依然把场面稳稳托住的胜利。
+Pressure. Presence. Command.
+被看见，被期待，也被交付最重的那一份责任。
+
+在队友失去半区以后，她站上了那个最不能退的位置。国庆节的决赛，她用一个干脆利落的 4:1，把比赛稳稳打了下来，也把那面国旗重新升回场馆中央。真正让人记住她的，不只是主场赢球的热烈，而是在那么多目光、那么多压力同时压过来的时候，她依然能把比赛打成自己该有的样子。
+
+你最像她的地方，不只是亮，也不只是强，而是越在有分量的场合，越能把自己站稳。你身上有一种很难得的气场：不是靠喧闹压住别人，而是当局面真的需要一个人把它兜住的时候，你会让人相信，交给你就可以。`,
+      tags: ["主场", "责任", "气场", "抗压"],
+      profile: { Calm: 5, Fire: 5, Rise: 4, Aura: 7, Momentum: 4 }
+    },
+    {
+      id: "busan2024",
+      title: "2024 釜山团体赛｜定海神针",
+      subtitle: "区区华雄，我何需借酒",
+      description: `这不是一场只属于个人高光的比赛，而是一场把全队重心稳稳托住的比赛。
+Steady. Reliable. Unshaken.
+不一定最张扬，却总能在最关键的时候，把局面稳住。
+
+作为一单，她一人拿下两分，两场都是干脆利落的 3:0。真正动人的却不只是比分，而是那种几乎不动声色的稳定——像浪里压舱的石，像局面将乱未乱时，最先落下来的那一根定针。她不一定总站在最亮的地方，却总能在最需要的时候，把全队的节奏、信念和重心一起稳住。
+
+你最像她的地方，不是一定要站在最热闹的地方发光，而是你一出现，很多人就会安心。你身上有一种很珍贵的力量：不轻易慌，也不轻易乱，到了关键时候，总能把局面稳稳接住。`,
+      tags: ["稳定", "一单两分", "定海神针", "安心感"],
+      profile: { Calm: 7, Fire: 2, Rise: 5, Aura: 2, Momentum: 5 }
+    },
+    {
+      id: "doha2025",
+      title: "2025 多哈世乒赛｜再度加冕",
+      subtitle: "和命运，再来一局",
+      description: `这不是一次轻松回到顶点的胜利，而是一场和命运重新对坐的比赛。
+Return. Composure. Crown.
+跌过以后，再站稳；被命运拨动一下，也还是能笑着接住。
+
+对手赛点擦边，命运像是故意开了一个玩笑，但孙颖莎只是一笑置之。真正强大的人，不是不被打乱，而是被打乱以后，依然能把比赛带回自己的节奏里。
+
+你最像她的地方，不是从来不跌倒，而是跌过以后，还是能重新站上最高处，把那个位置再一次拿回来。`,
+      tags: ["回升", "沉住", "加冕", "再次证明"],
+      profile: { Calm: 5, Fire: 2, Rise: 7, Aura: 3, Momentum: 5 }
+    },
+    {
+      id: "worldcup2026",
+      title: "2026 澳门世界杯｜统治延续",
+      subtitle: "明亮的心将指引着她，把胜利带回。",
+      description: `这不是一场顺风顺水的卫冕，而是一场在波折与强敌之间，依然把胜利带回来的比赛。
+Power. Light. Legacy.
+不是偶然闪光，而是在一次次较量里，仍然站到最后。
+
+这一路并不平静。赛程波折，强敌环伺，甚至一度有种死里逃生的惊险感；可她还是一步一步走到了终点，并成为了第一位世界杯女单三连冠得主。真正让人信服的，不只是冠军本身，而是那种无论局面怎么晃，她最后都还能把胜利重新握回手里的能力。
+
+你最像她的地方，不是只在某一刻特别亮，而是你有一种持续发光的力量。你未必靠一瞬惊艳让人记住，却会让人慢慢意识到：你不是恰好站在这里，而是你本来就该一直站在这里。`,
+      tags: ["三连冠", "统治力", "王者气场", "megastar"],
+      profile: { Calm: 4, Fire: 5, Rise: 2, Aura: 7, Momentum: 5 }
+    },
+    {
+      id: "asiacup2026",
+      title: "2026 亚洲杯决赛｜绝境归来",
+      subtitle: "在高山重峦间，去望见了不起的自己",
+      description: `这不是一场轻松抵达的胜利，而是一场从疼痛与摇晃里重新走回来的胜利。
+Resilience. Return. Triumph.
+受过伤，跌过节奏，却还是一步一步，把自己带回了场中央。
+
+从香港总决赛因伤退赛，到复出后的第一站，她就在七局大战里咬到了最后，并拿下了自己的第一个亚洲杯冠军。比分被一路拖进最深处，决胜局又打到 13:11，那已经不只是技术和状态，而是一种在疼痛、波动和不确定里，依然把比赛咬下来的力量。
+
+你最像她的地方，不是从来不脆弱，而是即使在最难的时候，也还能一点一点把自己拼回来。你身上有一种很成熟的韧性：不急着喊痛，也不轻易松手，而是咬着牙走过重峦，最后重新看见那个了不起的自己。`,
+      tags: ["伤后归来", "七局大战", "韧性", "首冠"],
+      profile: { Calm: 5, Fire: 4, Rise: 7, Aura: 2, Momentum: 5 }
+    },
+    {
+      id: "japan2017",
+      title: "2017 日本公开赛｜天才出道",
+      subtitle: "国乒出了个孙颖莎",
+      description: `这不是一场循序渐进被看见的比赛，而是一场一亮相就让人记住的比赛。
+Talent. Spark. Arrival.
+灵气，锋芒，还有那种一下子闯进视线里的天赋感。
+
+第一次真正站到更大的赛场上，她就用出道即双冠的方式，把名字稳稳留在了很多人的记忆里。真正让人惊叹的，不只是赢了，而是那种近乎轻巧的锋利——像一束刚亮起来的光，明明来得很新，却已经亮得让人移不开眼。
+
+你最像她的地方，不一定是按部就班地走进别人的视线，而是总会在某个瞬间，用一种很鲜明、很独特的方式被记住。你身上有一种很少见的东西：新鲜、锋利、轻巧，也足够耀眼。`,
+      tags: ["灵气", "锋芒", "双冠", "天才感"],
+      profile: { Calm: 2, Fire: 7, Rise: 2, Aura: 5, Momentum: 2 }
+    },
+    {
+      id: "asia_representative",
+      title: "隐藏结果｜亚洲代表",
+      subtitle: "The world is your oyster",
+      description: `这不是某一场比赛的胜利，而是一种更大的位置。
+Seen. Trusted. Expected.
+被看见，被信任，被期待。
+你最像她的地方，不只是发光，而是你站在中心的时候，会让人觉得：你本来就该在那里。`,
+      tags: ["分量", "信任", "期待", "中心"],
+      profile: { Calm: 5, Fire: 2, Rise: 4, Aura: 7, Momentum: 5 },
+      hidden: true
+    },
+    {
+      id: "journey2026",
+      title: "隐藏结果｜2026 万场竞途",
+      subtitle: "孙颖莎要成为孙颖莎",
+      description: `“为了那一天而活三年，那是活不出来的。”
+这不是某一场比赛的胜利，而是一条很长的路。
+Sensible、Yearning、Steadfast。
+理性地向前，热望地生活，坚定地不停止。
+你最像她的地方，不是赢下了哪一场，而是在很多场很多路之后，还是想成为自己。`,
+      tags: ["理性", "热望", "坚定", "成为自己"],
+      profile: { Calm: 5, Fire: 1, Rise: 6, Aura: 2, Momentum: 7 },
+      hidden: true
+    }
+  ];
+
+  const questions = [
+    {
+      text: "周末突然空出一整天，你最想怎么过？",
+      options: [
+        { text: "睡到自然醒，让自己慢慢恢复电量", score: { Calm: 2, Momentum: 1 } },
+        { text: "出门走走，见想见的人，也晒一晒今天的太阳", score: { Aura: 2, Fire: 1 } },
+        { text: "把那些拖了很久的事一点点完成", score: { Momentum: 2, Calm: 1 } },
+        { text: "随机出发，像小小的勇士一样往前闯", score: { Fire: 2, Aura: 1 } }
+      ]
+    },
+    {
+      text: "最近状态不太好时，你通常会？",
+      options: [
+        { text: "自己消化，不太说，先把眼前的事做好", score: { Calm: 2, Rise: 1 } },
+        { text: "找朋友聊聊，让情绪有个出口", score: { Aura: 2, Calm: 1 } },
+        { text: "继续做该做的事，专注当下，别想太多", score: { Momentum: 2, Calm: 1 } },
+        { text: "等某个瞬间突然想开，相信今天的太阳会比昨天更大一点", score: { Rise: 2, Fire: 1 } }
+      ]
+    },
+    {
+      text: "你更喜欢哪种天气？",
+      options: [
+        { text: "清晨有风的晴天", score: { Fire: 2, Aura: 1 } },
+        { text: "暴雨前压低的天空，安静得像有什么要发生", score: { Rise: 2, Fire: 1 } },
+        { text: "冬天但有太阳", score: { Momentum: 2, Calm: 1 } },
+        { text: "夜里安静的路灯下，像心里一直亮着一盏灯", score: { Calm: 2, Aura: 1 } }
+      ]
+    },
+    {
+      text: "在一个新的环境里，你通常会？",
+      options: [
+        { text: "先观察一下，再慢慢进入状态", score: { Calm: 2, Momentum: 1 } },
+        { text: "主动一点，先去认识大家", score: { Aura: 2, Fire: 1 } },
+        { text: "先把自己的节奏稳住，不急着融进去", score: { Momentum: 2, Calm: 1 } },
+        { text: "看情况，遇到让我舒服的人才会慢慢打开自己", score: { Calm: 2, Rise: 1 } }
+      ]
+    },
+    {
+      text: "如果可以拥有一种超能力，你最想选哪一个？",
+      options: [
+        { text: "拥有一扇任意门，去想去的地方", score: { Momentum: 2, Aura: 1 } },
+        { text: "像皮卡丘一样，随时放出很强的能量", score: { Fire: 2, Aura: 1 } },
+        { text: "像马里奥一样，掉下去也能继续闯关", score: { Rise: 2, Momentum: 1 } },
+        { text: "像小熊维尼一样，自带让人安心的温度", score: { Calm: 2, Aura: 1 } }
+      ]
+    },
+    {
+      text: "看一场乒乓球比赛时，你最容易被哪种瞬间打动？",
+      options: [
+        { text: "开局就把气势打出来的那一下", score: { Fire: 2, Aura: 1 } },
+        { text: "落后时一点一点追上来的过程", score: { Rise: 2, Momentum: 1 } },
+        { text: "关键分还能稳稳咬住的时候", score: { Calm: 2, Rise: 1 } },
+        { text: "赢下比赛后举手欢呼的那一刻", score: { Aura: 2, Fire: 1 } }
+      ]
+    },
+    {
+      text: "如果用一种光形容孙颖莎，你会选：",
+      options: [
+        { text: "清晨刚亮起来的光", score: { Fire: 2, Aura: 1 } },
+        { text: "刚好落在中心的那束光", score: { Aura: 2, Fire: 1 } },
+        { text: "雨过之后慢慢透出来的光", score: { Rise: 2, Momentum: 1 } },
+        { text: "一直安静亮着的一盏灯", score: { Calm: 2, Aura: 1 } }
+      ]
+    },
+    {
+      text: "如果把孙颖莎放进迪士尼里，你觉得她更像哪个角色？",
+      options: [
+        { text: "木兰 —— 沉稳，也总能在关键时刻扛住一切", score: { Calm: 2, Rise: 1 } },
+        { text: "艾莎 —— 克制、清醒，也带着一点不动声色的锋芒", score: { Calm: 2, Aura: 1 } },
+        { text: "玲娜贝儿 —— 轻巧、灵动，亮起来时很难不被看见", score: { Fire: 2, Aura: 1 } },
+        { text: "梅莉达 —— 带着冲劲，也带着一直往前走的倔强", score: { Momentum: 2, Fire: 1 } }
+      ]
+    },
+    {
+      text: "你在团队里更像哪种人？",
+      options: [
+        { text: "带动气氛，让大家放松一点的人", score: { Aura: 2, Fire: 1 } },
+        { text: "不太显眼，但会默默兜底的人", score: { Calm: 2, Momentum: 1 } },
+        { text: "到关键时候，会主动站出来的人", score: { Rise: 2, Fire: 1 } },
+        { text: "平时安静一点，但一直很可靠的人", score: { Calm: 2, Rise: 1 } }
+      ]
+    },
+    {
+      text: "你最希望别人怎样记住你？",
+      options: [
+        { text: "我来过，而且留下过一点痕迹", score: { Aura: 2, Fire: 1 } },
+        { text: "我认真地爱过", score: { Calm: 2, Aura: 1 } },
+        { text: "我跌跌撞撞地走了很远，但从来没有停下", score: { Rise: 2, Momentum: 1 } },
+        { text: "到最后，我活成了自己想成为的样子", score: { Momentum: 2, Rise: 1 } }
+      ]
+    },
+    {
+      text: "如果你的人生是一场比赛，你更相信：",
+      options: [
+        { text: "好的开始，会让后面的路更顺一点", score: { Fire: 2, Aura: 1 } },
+        { text: "努力，发光的是追梦的人", score: { Momentum: 2, Fire: 1 } },
+        { text: "时机，有些事要等到正确的时候", score: { Calm: 2, Aura: 1 } },
+        { text: "坚持，把时间的刻度拉长，才看得见答案", score: { Rise: 2, Momentum: 1 } }
+      ]
+    },
+    {
+      text: "到最后，你更想走进哪一个场景？",
+      options: [
+        { text: "天刚亮的球馆，所有声音都还很轻", score: { Calm: 2, Momentum: 1 } },
+        { text: "比赛结束后的看台，灯光还停在你身上", score: { Aura: 2, Fire: 1 } },
+        { text: "雨停之后的路，前面很长，但你知道自己会继续走", score: { Rise: 2, Momentum: 1 } },
+        { text: "一盏暖灯亮着的房间，外面很静，里面也很静", score: { Calm: 2, Rise: 1 } }
+      ]
+    }
+  ];
+
+  const homeScreen = document.getElementById("home-screen");
+  const quizScreen = document.getElementById("quiz-screen");
+  const resultScreen = document.getElementById("result-screen");
+
+  const startBtn = document.getElementById("start-btn");
+  const prevBtn = document.getElementById("prev-btn");
+  const backHomeBtn = document.getElementById("back-home-btn");
+  const restartBtn = document.getElementById("restart-btn");
+  const goHomeBtn = document.getElementById("go-home-btn");
+
+  const progressText = document.getElementById("progress-text");
+  const progressFill = document.getElementById("progress-fill");
+  const questionText = document.getElementById("question-text");
+  const optionsContainer = document.getElementById("options-container");
+
+  const resultTitle = document.getElementById("result-title");
+  const resultSubtitle = document.getElementById("result-subtitle");
+  const resultDescription = document.getElementById("result-description");
+  const resultTags = document.getElementById("result-tags");
+  const scoreGrid = document.getElementById("score-grid");
+
+  let currentQuestionIndex = 0;
+  let scores = createEmptyScores();
+  let answerHistory = [];
+
+  function createEmptyScores() {
+    return { Calm: 0, Fire: 0, Rise: 0, Aura: 0, Momentum: 0 };
+  }
+
+  function resetQuiz() {
+    currentQuestionIndex = 0;
+    scores = createEmptyScores();
+    answerHistory = [];
+  }
+
+  function showScreen(screenToShow) {
+    [homeScreen, quizScreen, resultScreen].forEach(screen => screen.classList.remove("active"));
+    screenToShow.classList.add("active");
+  }
+
+  function applyScore(scoreObject) {
+    Object.entries(scoreObject).forEach(([dimension, value]) => {
+      scores[dimension] += value;
+    });
+  }
+
+  function removeScore(scoreObject) {
+    Object.entries(scoreObject).forEach(([dimension, value]) => {
+      scores[dimension] -= value;
+    });
+  }
+
+  function renderQuestion() {
+    const question = questions[currentQuestionIndex];
+    const questionNumber = currentQuestionIndex + 1;
+    const progressPercent = (questionNumber / questions.length) * 100;
+
+    progressText.textContent = `第${questionNumber} / ${questions.length}题`;
+    progressFill.style.width = `${progressPercent}%`;
+    questionText.textContent = question.text;
+    optionsContainer.innerHTML = "";
+    prevBtn.style.display = currentQuestionIndex === 0 ? "none" : "inline-block";
+
+    question.options.forEach(option => {
+      const button = document.createElement("button");
+      button.className = "option-btn";
+      button.textContent = option.text;
+
+      button.addEventListener("click", () => {
+        applyScore(option.score);
+        answerHistory[currentQuestionIndex] = option.score;
+        currentQuestionIndex += 1;
+
+        if (currentQuestionIndex < questions.length) {
+          renderQuestion();
+        } else {
+          const finalResult = getFinalResult();
+          renderResult(finalResult);
+          showScreen(resultScreen);
+        }
+      });
+
+      optionsContainer.appendChild(button);
+    });
+  }
+
+  function getDistance(profile) {
+    return DIMENSIONS.reduce((sum, dimension) => sum + Math.abs(scores[dimension] - profile[dimension]), 0);
+  }
+
+  function getFinalResult() {
+    const ranked = results
+      .map(result => ({ ...result, distance: getDistance(result.profile) }))
+      .sort((a, b) => a.distance - b.distance);
+
+    const hiddenJourney = results.find(r => r.id === "journey2026");
+    const hiddenAsia = results.find(r => r.id === "asia_representative");
+
+    const journeyTrigger = scores.Momentum >= 9 && scores.Rise >= 6;
+    const asiaTrigger = scores.Aura >= 8 && scores.Calm >= 6;
+
+    if (journeyTrigger) return hiddenJourney;
+    if (asiaTrigger) return hiddenAsia;
+
+    return ranked.find(item => !item.hidden) || ranked[0];
+  }
+
+  function renderResult(result) {
+    resultTitle.textContent = result.title;
+    resultSubtitle.textContent = result.subtitle;
+    resultDescription.textContent = result.description;
+
+    resultTags.innerHTML = "";
+    result.tags.forEach(tagText => {
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = tagText;
+      resultTags.appendChild(tag);
+    });
+
+    scoreGrid.innerHTML = "";
+    DIMENSIONS.forEach(dimension => {
+      const item = document.createElement("div");
+      item.className = "score-item";
+      item.innerHTML = `
+        <div class="score-label">${dimension}</div>
+        <div class="score-value">${scores[dimension]}</div>
+      `;
+      scoreGrid.appendChild(item);
+    });
+  }
+
+  startBtn.addEventListener("click", () => {
+    resetQuiz();
+    renderQuestion();
+    showScreen(quizScreen);
+  });
+
+  prevBtn.addEventListener("click", () => {
+    if (currentQuestionIndex === 0) return;
+
+    currentQuestionIndex -= 1;
+
+    const previousScore = answerHistory[currentQuestionIndex];
+    if (previousScore) {
+      removeScore(previousScore);
+      answerHistory[currentQuestionIndex] = null;
+    }
+
+    renderQuestion();
+  });
+
+  backHomeBtn.addEventListener("click", () => {
+    resetQuiz();
+    showScreen(homeScreen);
+  });
+
+  restartBtn.addEventListener("click", () => {
+    resetQuiz();
+    renderQuestion();
+    showScreen(quizScreen);
+  });
+
+  goHomeBtn.addEventListener("click", () => {
+    resetQuiz();
+    showScreen(homeScreen);
+  });
+</script>
+</body>
+</html>
